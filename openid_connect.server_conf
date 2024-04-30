@@ -6,7 +6,7 @@
     gunzip on; # Decompress IdP responses if necessary
     # Advanced configuration END
 
-    location = /_jwks_uri {
+    location = /_jwks_uri_abc {
         internal;
         proxy_cache jwk;                              # Cache the JWK Set recieved from IdP
         proxy_cache_valid 200 12h;                    # How long to consider keys "fresh"
@@ -14,7 +14,19 @@
         proxy_ssl_server_name on;                     # For SNI to the IdP
         proxy_method GET;                             # In case client request was non-GET
         proxy_set_header Content-Length "";           # ''
-        proxy_pass $oidc_jwt_keyfile;                 # Expecting to find a URI here
+        proxy_pass http://192.168.201.130:8080/realms/myrealm-abc/protocol/openid-connect/certs;                 # Expecting to find a URI here
+        proxy_ignore_headers Cache-Control Expires Set-Cookie; # Does not influence caching
+    }
+
+    location = /_jwks_uri_def {
+        internal;
+        proxy_cache jwk;                              # Cache the JWK Set recieved from IdP
+        proxy_cache_valid 200 12h;                    # How long to consider keys "fresh"
+        proxy_cache_use_stale error timeout updating; # Use old JWK Set if cannot reach IdP
+        proxy_ssl_server_name on;                     # For SNI to the IdP
+        proxy_method GET;                             # In case client request was non-GET
+        proxy_set_header Content-Length "";           # ''
+        proxy_pass http://192.168.201.130:8081/realms/myrealm-def/protocol/openid-connect/certs;                 # Expecting to find a URI here
         proxy_ignore_headers Cache-Control Expires Set-Cookie; # Does not influence caching
     }
 

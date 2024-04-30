@@ -198,7 +198,7 @@ function codeExchange(r) {
                             r.variables.new_access_token = "";
                         }
 
-                        r.headersOut["Set-Cookie"] = "auth_token=" + r.variables.request_id + "; " + r.variables.oidc_cookie_flags;
+                        r.headersOut["Set-Cookie"] = "auth_token=" + r.variables.request_id + "; " + r.variables.auth_token_cookie_flags;
                         r.return(302, r.variables.redirect_base + decodeURIComponent(r.variables.cookie_auth_redir));
                    }
                 );
